@@ -797,8 +797,13 @@ const RelationModalWithContext = ({
           }
           hasMoreItems={hasNextPage}
           loading={isLoadingSearchRelations || isLoadingPermissions}
-          onOpenChange={() => {
-            handleSearch(textValue ?? '');
+          onOpenChange={(isOpen) => {
+            // Every time the dropdown opens, list all available relations rather than a search
+            // term left over from a previous selection (the input text can still hold the
+            // selected option's label at this point).
+            if (isOpen) {
+              handleSearch('');
+            }
           }}
           noOptionsMessage={() =>
             formatMessage({

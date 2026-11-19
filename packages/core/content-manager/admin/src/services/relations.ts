@@ -122,13 +122,18 @@ const relationsApi = contentManagerApi.injectEndpoints({
       },
       serializeQueryArgs: (args) => {
         const { endpointName, queryArgs } = args;
+        /**
+         * Every param that changes which relations are available must be part of the cache key,
+         * otherwise distinct fields (e.g. two dynamic-zone components listing the same target model)
+         * would share cached results. Pagination is excluded so pages merge into one cache entry.
+         */
+        const { page: _page, ...params } = queryArgs.params ?? {};
+
         return {
           endpointName,
           model: queryArgs.model,
           targetField: queryArgs.targetField,
-          _q: queryArgs.params?._q,
-          idsToOmit: queryArgs.params?.idsToOmit,
-          idsToInclude: queryArgs.params?.idsToInclude,
+          ...params,
         };
       },
       merge: (currentCache, newItems) => {

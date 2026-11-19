@@ -25,6 +25,20 @@ describe('BooleanInput (via InputRenderer)', () => {
     expect(screen.getByRole('button', { name: /clear/i })).toBeInTheDocument();
   });
 
+  it('hides Clear when the value is unset (undefined) on a new entry', () => {
+    render(<InputRenderer {...booleanField} />, {
+      renderOptions: {
+        wrapper: ({ children }) => (
+          <Form method="POST" initialValues={{}}>
+            {children}
+          </Form>
+        ),
+      },
+    });
+
+    expect(screen.queryByRole('button', { name: /clear/i })).not.toBeInTheDocument();
+  });
+
   it('hides Clear when the field is disabled (e.g. published review view)', () => {
     render(<InputRenderer {...booleanField} disabled />, {
       renderOptions: {
